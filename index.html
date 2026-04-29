@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Секретный генератор сейвов</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a1e3d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ecf0f1;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(20, 40, 70, 0.95);
+            border: 2px solid #f1c40f;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #f1c40f;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            background: #1a1a2e;
+            border: 2px solid #4a6fa5;
+            color: #fff;
+            padding: 12px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 16px;
+            text-align: center;
+            margin: 5px 0;
+        }
+        input:focus {
+            border-color: #f1c40f;
+            outline: none;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            color: #aaa;
+            font-size: 13px;
+            margin: 10px 0 5px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+        .row > div {
+            flex: 1;
+        }
+
+        button {
+            background: #f1c40f;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            box-shadow: 0 0 20px rgba(241,196,15,0.6);
+            transform: scale(1.03);
+        }
+        button.green {
+            background: #27ae60;
+            color: #fff;
+        }
+        button.red {
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .checkbox-group {
+            text-align: left;
+            margin: 10px 0;
+        }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ecf0f1;
+            font-size: 14px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #f1c40f;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #27ae60;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #888;
+            font-size: 12px;
+            margin: 3px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Секретный генератор</h1>
+        <p class="subtitle">Energy Tycoon Save Editor</p>
+
+        <div class="section active" id="passwordScreen">
+            <p style="color:#aaa;">Введи пароль для доступа:</p>
+            <input type="text" id="passwordInput" placeholder="Пароль..." autocomplete="off">
+            <p class="error" id="passwordError" style="display:none;">❌ Неверный пароль!</p>
+            <button onclick="checkPassword()">🔓 Войти</button>
+        </div>
+
+        <div class="section" id="editorScreen">
+            <p style="color:#f1c40f;font-weight:bold;">⚡️ Редактор сейва</p>
+            <p class="info">Оставь поле пустым — значение не изменится</p>
+
+            <div class="row">
+                <div><label>🧾 Счета</label><input type="number" id="billsInput" placeholder="Текущее"></div>
+                <div><label>💵 Доллары</label><input type="number" id="moneyInput" placeholder="Текущее"></div>
+            </div>
+
+            <div class="row">
+                <div><label>👆 Сила клика</label><input type="number" id="clickPowerInput" placeholder="Текущее"></div>
+                <div><label>⏱️ Счетов/сек</label><input type="number" id="billsPerSecInput" placeholder="Текущее"></div>
+            </div>
+
+            <div class="row">
+                <div><label>📈 Рынок (уровень)</label><input type="number" id="sellUpgInput" placeholder="Текущее"></div>
+                <div><label>💲 Цена счёта ($)</label><input type="number" id="billPriceInput" placeholder="100"></div>
+            </div>
+
+            <div class="row">
+                <div><label>₿ Биткоины</label><input type="number" id="btcInput" placeholder="Текущее"></div>
+                <div><label>💲 Курс BTC ($)</label><input type="number" id="btcPriceInput" placeholder="Текущее"></div>
+            </div>
+
+            <div class="row">
+                <div><label>⚡ Ферма BTC (уровень)</label><input type="number" id="btcUpgInput" placeholder="Текущее"></div>
+                <div><label>🔄 Перерождений</label><input type="number" id="rebirthsInput" placeholder="Текущее"></div>
+            </div>
+
+            <p style="color:#f1c40f;font-weight:bold;margin-top:20px;">🏆 Достижения</p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" class="ach-check" data-key="rebirth_1"> 1 перерождение — «Я сделал хотя бы 1!»</label>
+                <label><input type="checkbox" class="ach-check" data-key="rebirth_5"> 5 перерождений — «Бро, ты кайф мэн!»</label>
+                <label><input type="checkbox" class="ach-check" data-key="rebirth_10"> 10 перерождений — «КАК?!?»</label>
+                <label><input type="checkbox" class="ach-check" data-key="rebirth_20"> 20 перерождений — «ТИКИ МЭН ТОЧНО!»</label>
+                <label><input type="checkbox" class="ach-check" data-key="rebirth_50"> 50 перерождений — «БРО ТЫ СТИКИ МЭН»</label>
+                <label><input type="checkbox" class="ach-check" data-key="rebirth_100"> 100 перерождений — «Районный прокурор, но не 67»</label>
+                <label><input type="checkbox" class="ach-check" data-key="earn_1M_money"> $1,000,000 — «Ничего сложного!»</label>
+                <label><input type="checkbox" class="ach-check" data-key="earn_1M_bills"> 1,000,000 счетов — «Бро, это сложно!»</label>
+                <label><input type="checkbox" class="ach-check" data-key="buy_100_btc_at_once"> 100 BTC за раз — «Лос биткоина»</label>
+                <label><input type="checkbox" class="ach-check" data-key="no_upgrade_rebirth"> Без улучшений — «БРАХ!»</label>
+                <label><input type="checkbox" class="ach-check" data-key="earn_1B_no_rebirth"> $1B без перерожд. — «Детдомовец»</label>
+            </div>
+
+            <p class="info" style="margin-top:15px;">Буст перерождений: 2% + 0.5% за каждое</p>
+
+            <button class="green" onclick="generateSave()">📥 Скачать energy_tycoon_save.json</button>
+            <button class="red" onclick="logout()">🚪 Выйти</button>
+            <p class="success" id="saveSuccess" style="display:none;">✅ Файл сохранён!</p>
+        </div>
+    </div>
+
+    <script>
+        const PASSWORD_HASH = "7879d31e69fed7b0d06cd2c1b2bcb117873ed3ca57dd5dfa7acb5abf790089a8";
+        const SECRET_KEY = "EnergyTycoon2024Secret!@#";
+
+        function sha256(input) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            return crypto.subtle.digest('SHA-256', data).then(hash => {
+                return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+            });
+        }
+
+        async function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const hash = await sha256(password);
+            if (hash === PASSWORD_HASH) {
+                document.getElementById('passwordScreen').classList.remove('active');
+                document.getElementById('editorScreen').classList.add('active');
+                document.getElementById('passwordError').style.display = 'none';
+            } else {
+                document.getElementById('passwordError').style.display = 'block';
+            }
+        }
+
+        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        function encode(str) {
+            try { return btoa(unescape(encodeURIComponent(str + SECRET_KEY))); }
+            catch(e) { return btoa(str + SECRET_KEY); }
+        }
+
+        function generateSave() {
+            const rebirths = parseInt(document.getElementById('rebirthsInput').value) || 0;
+            const rebirthBonus = rebirths === 0 ? 0 : (2 + (rebirths - 1) * 0.5);
+            const btcPriceVal = parseInt(document.getElementById('btcPriceInput').value) || 10000;
+            const btcHistory = [];
+            for (let i = 19; i >= 0; i--) {
+                btcHistory.push(btcPriceVal - i * (btcPriceVal * 0.01));
+            }
+
+            const G = {
+                bills: parseInt(document.getElementById('billsInput').value) || 0,
+                money: parseInt(document.getElementById('moneyInput').value) || 0,
+                clickPower: parseInt(document.getElementById('clickPowerInput').value) || 1,
+                billsPerSec: parseInt(document.getElementById('billsPerSecInput').value) || 0,
+                upgrades: [0, 0],
+                baseUpgCost: [1600, 8000],
+                sellUpgLevel: parseInt(document.getElementById('sellUpgInput').value) || 0,
+                sellUpgBaseCost: 30000,
+                billPrice: parseInt(document.getElementById('billPriceInput').value) || 100,
+                btc: parseInt(document.getElementById('btcInput').value) || 0,
+                btcPrice: btcPriceVal,
+                btcUpgLevel: parseInt(document.getElementById('btcUpgInput').value) || 0,
+                btcUpgBaseCost: 50000,
+                btcHistory: btcHistory,
+                rebirths: rebirths,
+                rebirthBonus: rebirthBonus,
+                noUpgradeRebirthCheck: true,
+                achievementsUnlocked: {
+                    rebirth_1: false, rebirth_5: false, rebirth_10: false,
+                    rebirth_20: false, rebirth_50: false, rebirth_100: false,
+                    earn_1M_money: false, earn_1M_bills: false,
+                    buy_100_btc_at_once: false, no_upgrade_rebirth: false,
+                    earn_1B_no_rebirth: false
+                }
+            };
+
+            document.querySelectorAll('.ach-check').forEach(cb => {
+                if (cb.checked) G.achievementsUnlocked[cb.dataset.key] = true;
+            });
+
+            if (rebirths >= 1) G.achievementsUnlocked.rebirth_1 = true;
+            if (rebirths >= 5) G.achievementsUnlocked.rebirth_5 = true;
+            if (rebirths >= 10) G.achievementsUnlocked.rebirth_10 = true;
+            if (rebirths >= 20) G.achievementsUnlocked.rebirth_20 = true;
+            if (rebirths >= 50) G.achievementsUnlocked.rebirth_50 = true;
+            if (rebirths >= 100) G.achievementsUnlocked.rebirth_100 = true;
+
+            const encrypted = encode(JSON.stringify(G));
+            const blob = new Blob([encrypted], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'energy_tycoon_save.json';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            document.getElementById('saveSuccess').style.display = 'block';
+            setTimeout(() => { document.getElementById('saveSuccess').style.display = 'none'; }, 3000);
+        }
+
+        function logout() {
+            document.getElementById('editorScreen').classList.remove('active');
+            document.getElementById('passwordScreen').classList.add('active');
+            document.getElementById('passwordInput').value = '';
+        }
+    </script>
+</body>
+</html>
